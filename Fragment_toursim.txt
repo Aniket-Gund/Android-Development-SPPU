@@ -1,0 +1,184 @@
+1]Name your project - TourismApp
+
+2]MainActivity.java
+package com.example.tourismapp;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.FrameLayout;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    FrameLayout fragmentBContainer;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        fragmentBContainer = findViewById(R.id.fragmentBContainer);
+        fragmentBContainer.setVisibility(View.GONE);  // Hide B initially
+
+        // Load FragmentA initially
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentAContainer, new FragmentA())
+                .commit();
+    }
+
+    public void showFragmentB(String name, String place) {
+        FragmentB fragmentB = new FragmentB();
+        Bundle bundle = new Bundle();
+        bundle.putString("name_key", name);
+        bundle.putString("place_key", place);
+        fragmentB.setArguments(bundle);
+
+        // Show FragmentB
+        fragmentBContainer.setVisibility(View.VISIBLE);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentBContainer, fragmentB)
+                .commit();
+    }
+}
+
+3]activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Container for FragmentA -->
+    <FrameLayout
+        android:id="@+id/fragmentAContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Container for FragmentB (hidden initially) -->
+    <FrameLayout
+        android:id="@+id/fragmentBContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+</LinearLayout>
+
+4]FragmentA.java
+package com.example.tourismapp;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.fragment.app.Fragment;
+
+public class FragmentA extends Fragment {
+
+    EditText nameEditText, placeEditText;
+    Button sendButton;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_a, container, false);
+
+        nameEditText = view.findViewById(R.id.editTextName);
+        placeEditText = view.findViewById(R.id.editTextPlace);
+        sendButton = view.findViewById(R.id.buttonSendData);
+
+        sendButton.setOnClickListener(v -> {
+            String name = nameEditText.getText().toString();
+            String place = placeEditText.getText().toString();
+
+            if (!name.isEmpty() && !place.isEmpty()) {
+                ((MainActivity) getActivity()).showFragmentB(name, place);
+            } else {
+                Toast.makeText(getActivity(), "Enter name and place!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
+    }
+}
+
+5]fragment_a.xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your name"/>
+
+    <EditText
+        android:id="@+id/editTextPlace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter place to visit"/>
+
+    <Button
+        android:id="@+id/buttonSendData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Data"/>
+</LinearLayout>
+
+6]FragmentB.java
+package com.example.tourismapp;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.fragment.app.Fragment;
+
+public class FragmentB extends Fragment {
+
+    TextView nameText, placeText;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_b, container, false);
+
+        nameText = view.findViewById(R.id.textViewDisplayName);
+        placeText = view.findViewById(R.id.textViewDisplayPlace);
+
+        String name = getArguments().getString("name_key", "No Name");
+        String place = getArguments().getString("place_key", "No Place");
+
+        nameText.setText("Name: " + name);
+        placeText.setText("Place: " + place);
+
+        return view;
+    }
+}
+
+7]fragment_b.xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewDisplayName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:" />
+
+    <TextView
+        android:id="@+id/textViewDisplayPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Place:" />
+</LinearLayout>

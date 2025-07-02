@@ -1,0 +1,236 @@
+1]Projectname : MovieApp
+
+2]MainActivity.java:
+ 
+package com.example.movieapp;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainFragmentContainer, new MovieListFragment())
+                .commit();
+    }
+}
+
+3]activity_main.xml :
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainFragmentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+
+4]MovieDetailFragment.java:
+package com.example.movieapp;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+
+public class MovieDetailFragment extends Fragment {
+
+    public MovieDetailFragment() {}
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+
+        TextView txtMovie = view.findViewById(R.id.txtMovieName);
+        TextView txtPrice = view.findViewById(R.id.txtPrice);
+        TextView txtTime = view.findViewById(R.id.txtTime);
+        TextView txtScreen = view.findViewById(R.id.txtScreen);
+        Button btnBook = view.findViewById(R.id.btnBook);
+
+        String movieName = getArguments().getString("movie");
+        txtMovie.setText("Movie: " + movieName);
+
+        switch (movieName) {
+            case "Avengers":
+                txtPrice.setText("Price: ₹200");
+                txtTime.setText("Time: 6:00 PM");
+                txtScreen.setText("Screen No: 1");
+                break;
+            case "Inception":
+                txtPrice.setText("Price: ₹180");
+                txtTime.setText("Time: 9:00 PM");
+                txtScreen.setText("Screen No: 2");
+                break;
+            case "Interstellar":
+                txtPrice.setText("Price: ₹220");
+                txtTime.setText("Time: 3:00 PM");
+                txtScreen.setText("Screen No: 3");
+                break;
+        }
+
+        btnBook.setOnClickListener(v -> {
+            Toast.makeText(getActivity(), "Movie ticket booked!", Toast.LENGTH_SHORT).show();
+        });
+
+        return view;
+    }
+}
+
+5]fragment_movie_detail.xml :
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txtMovieName"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txtPrice"
+            android:layout_marginBottom="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txtTime"
+            android:layout_marginBottom="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txtScreen"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnBook"
+            android:text="Book Ticket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>
+
+6]MovieListFragment.java:
+
+package com.example.movieapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import androidx.fragment.app.Fragment;
+
+public class MovieListFragment extends Fragment {
+
+    String[] movies = {"Avengers", "Inception", "Interstellar"};
+
+    public MovieListFragment() {}
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+
+        ListView listView = view.findViewById(R.id.movieListView);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1, movies);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent intent = new Intent(getActivity(), SecondActivity.class);
+            intent.putExtra("movie", movies[position]);
+            startActivity(intent);
+        });
+
+        return view;
+    }
+}
+
+7]fragment_movie_list.xml :
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Title in the center -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="List of Movies"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="16dp" />
+
+    <!-- List of movies -->
+    <ListView
+        android:id="@+id/movieListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
+
+8]SecondActivity.java:
+
+package com.example.movieapp;
+
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
+public class SecondActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_second);
+
+        String movieName = getIntent().getStringExtra("movie");
+
+        MovieDetailFragment fragment = new MovieDetailFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("movie", movieName);
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.detailFragmentContainer, fragment)
+                .commit();
+    }
+}
+
+9]activity_second.xml:
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detailFragmentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+

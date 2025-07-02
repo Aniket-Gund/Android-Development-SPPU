@@ -1,0 +1,185 @@
+ProjectName:SportsItemsApp
+
+1]activity_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+2]item_sports_product.xml(res/layout):
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="6dp"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sports Product Name"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/productDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description" />
+
+        <TextView
+            android:id="@+id/productPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₹0.00"
+            android:textColor="#E91E63"
+            android:textStyle="bold" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+3]SportsProduct.java:
+package com.example.sportsitemsapp;
+
+public class SportsProduct {
+    private String name;
+    private String description;
+    private double price;
+
+    // Constructor
+    public SportsProduct(String name, String description, double price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
+    // Getter methods
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+}
+
+4]SportsProductAdapter:
+package com.example.sportsitemsapp;
+
+import android.content.Context;
+import android.view.*;
+import android.widget.*;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
+
+public class SportsProductAdapter extends RecyclerView.Adapter<SportsProductAdapter.ViewHolder> {
+
+    private Context context;
+    private List<SportsProduct> productList;
+
+    public SportsProductAdapter(Context context, List<SportsProduct> productList) {
+        this.context = context;
+        this.productList = productList;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView productName, productDesc, productPrice;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            productName = itemView.findViewById(R.id.productName);
+            productDesc = itemView.findViewById(R.id.productDesc);
+            productPrice = itemView.findViewById(R.id.productPrice);
+        }
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_sports_product, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        SportsProduct product = productList.get(position);
+        holder.productName.setText(product.getName());
+        holder.productDesc.setText(product.getDescription());
+        holder.productPrice.setText("₹" + product.getPrice());
+    }
+
+    @Override
+    public int getItemCount() {
+        return productList.size();
+    }
+}
+
+
+5]MainActivity.java:
+package com.example.sportsitemsapp;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.*;
+import java.util.*;
+
+public class MainActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView;
+    List<SportsProduct> productList;
+    SportsProductAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Create a list of sports products
+        productList = new ArrayList<>();
+        productList.add(new SportsProduct("Soccer Ball", "High-quality leather football", 799.0));
+        productList.add(new SportsProduct("Tennis Racket", "Durable and lightweight racket", 1999.0));
+        productList.add(new SportsProduct("Basketball", "Official size and weight", 999.0));
+        productList.add(new SportsProduct("Badminton Racket", "Flexible and lightweight", 599.0));
+        productList.add(new SportsProduct("Baseball Glove", "Soft leather for improved grip", 1299.0));
+        productList.add(new SportsProduct("Yoga Mat", "Non-slip surface for stability", 499.0));
+        productList.add(new SportsProduct("Cricket Bat", "Grade A English willow bat", 2499.0));
+        productList.add(new SportsProduct("Running Shoes", "Breathable with cushioned sole", 1599.0));
+        productList.add(new SportsProduct("Skipping Rope", "Adjustable length rope", 299.0));
+        productList.add(new SportsProduct("Dumbbell Set", "5kg adjustable dumbbells", 1099.0));
+        productList.add(new SportsProduct("Table Tennis Paddle", "Professional rubber grip", 699.0));
+        productList.add(new SportsProduct("Golf Ball Set", "Pack of 12 high-performance balls", 1199.0));
+        productList.add(new SportsProduct("Cycling Helmet", "Shock-resistant with ventilation", 899.0));
+        productList.add(new SportsProduct("Boxing Gloves", "Padding for safe training", 999.0));
+        productList.add(new SportsProduct("Swimming Goggles", "Anti-fog with UV protection", 399.0));
+
+
+        // Set up the adapter
+        adapter = new SportsProductAdapter(this, productList);
+        recyclerView.setAdapter(adapter);
+    }
+}

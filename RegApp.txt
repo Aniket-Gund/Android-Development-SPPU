@@ -1,0 +1,181 @@
+ProjectName:TrainTicketBooking
+
+
+
+1]activity_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Name Input -->
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Your Name" />
+
+        <!-- Gender Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gender:"
+            android:paddingTop="12dp"/>
+
+        <RadioGroup
+            android:id="@+id/radioGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male"/>
+
+            <RadioButton
+                android:id="@+id/radioFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female"/>
+        </RadioGroup>
+
+        <!-- Class Types -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Class Type:"
+            android:paddingTop="12dp"/>
+
+        <CheckBox
+            android:id="@+id/checkSleeper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sleeper"/>
+
+        <CheckBox
+            android:id="@+id/checkAC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AC"/>
+
+        <CheckBox
+            android:id="@+id/checkGeneral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="General"/>
+
+        <!-- Destination Spinner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Destination:"
+            android:paddingTop="12dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_marginTop="20dp"/>
+
+        <!-- Output TextView -->
+        <TextView
+            android:id="@+id/textOutput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:paddingTop="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>
+
+
+2]MainActivity.java:
+package com.example.trainticketbooking;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText editName;
+    RadioGroup radioGender;
+    CheckBox checkSleeper, checkAC, checkGeneral;
+    Spinner spinnerDestination;
+    Button btnSubmit;
+    TextView textOutput;
+
+    String[] destinations = {"Delhi", "Mumbai", "Kolkata", "Chennai", "Bangalore"};
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Bind Views
+        editName = findViewById(R.id.editName);
+        radioGender = findViewById(R.id.radioGender);
+        checkSleeper = findViewById(R.id.checkSleeper);
+        checkAC = findViewById(R.id.checkAC);
+        checkGeneral = findViewById(R.id.checkGeneral);
+        spinnerDestination = findViewById(R.id.spinnerDestination);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        textOutput = findViewById(R.id.textOutput);
+
+        // Set up Spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, destinations);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDestination.setAdapter(adapter);
+
+        // Submit Button Click
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = editName.getText().toString().trim();
+
+                // Gender
+                int selectedGenderId = radioGender.getCheckedRadioButtonId();
+                RadioButton selectedGenderBtn = findViewById(selectedGenderId);
+                String gender = (selectedGenderBtn != null) ? selectedGenderBtn.getText().toString() : "Not selected";
+
+                // Class Types
+                StringBuilder classTypes = new StringBuilder();
+                if (checkSleeper.isChecked()) classTypes.append("Sleeper ");
+                if (checkAC.isChecked()) classTypes.append("AC ");
+                if (checkGeneral.isChecked()) classTypes.append("General ");
+                if (classTypes.length() == 0) classTypes.append("None");
+
+                // Destination
+                String destination = spinnerDestination.getSelectedItem().toString();
+
+                // Show full summary on screen
+                String summary = "Ticket Booking Info:\n\n" +
+                        "Name: " + name + "\n" +
+                        "Gender: " + gender + "\n" +
+                        "Class: " + classTypes.toString() + "\n" +
+                        "Destination: " + destination;
+
+                textOutput.setText(summary);
+            }
+        });
+    }
+}

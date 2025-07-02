@@ -1,0 +1,148 @@
+ProjectName:MovieListApp:
+
+1]activity_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMovies"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>
+
+2]movie_item.xml(res/layout):
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F0F0F0"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/movieTitle"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/movieDescription"
+        android:textSize="14sp"
+        android:textColor="#555"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+3]Movie.java:
+package com.example.movielistapp;
+
+public class Movie {
+    private String title;
+    private String description;
+
+    public Movie(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+}
+
+4]MovieAdapter.java:
+package com.example.movielistapp;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
+
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+
+    private List<Movie> movieList;
+
+    public static class MovieViewHolder extends RecyclerView.ViewHolder {
+        TextView title, description;
+
+        public MovieViewHolder(View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.movieTitle);
+            description = itemView.findViewById(R.id.movieDescription);
+        }
+    }
+
+    public MovieAdapter(List<Movie> movieList) {
+        this.movieList = movieList;
+    }
+
+    @Override
+    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent, false);
+        return new MovieViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(MovieViewHolder holder, int position) {
+        Movie movie = movieList.get(position);
+        holder.title.setText(movie.getTitle());
+        holder.description.setText(movie.getDescription());
+    }
+
+    @Override
+    public int getItemCount() {
+        return movieList.size();
+    }
+}
+
+5]MainActivity.java:
+package com.example.movielistapp;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView;
+    List<Movie> movieList;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        recyclerView = findViewById(R.id.recyclerViewMovies);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        movieList = new ArrayList<>();
+        movieList.add(new Movie("Inception", ""));
+        movieList.add(new Movie("Interstellar", ""));
+        movieList.add(new Movie("The Shawshank Redemption", ""));
+        movieList.add(new Movie("The Godfather", ""));
+        movieList.add(new Movie("Titanic", ""));
+        movieList.add(new Movie("The Dark Knight", ""));
+        movieList.add(new Movie("Avengers: Endgame", ""));
+        movieList.add(new Movie("Forrest Gump", ""));
+        movieList.add(new Movie("Joker", ""));
+        movieList.add(new Movie("La La Land", ""));
+        movieList.add(new Movie("Dune", ""));
+        movieList.add(new Movie("Black Panther", ""));
+        movieList.add(new Movie("Top Gun: Maverick", ""));
+        movieList.add(new Movie("The Matrix", ""));
+        movieList.add(new Movie("Gladiator", ""));
+        movieList.add(new Movie("Avatar: The Way of Water", ""));
+
+        MovieAdapter adapter = new MovieAdapter(movieList);
+        recyclerView.setAdapter(adapter);
+    }
+}

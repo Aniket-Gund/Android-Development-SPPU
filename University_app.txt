@@ -1,0 +1,188 @@
+1]Projectname : UniConnect
+2]MainActivity.java 
+package com.example.uniconnect;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.PopupMenu;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    Button btnHome, btnAbout, btnAdmission, btnDepartments, btnExit;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initializing Buttons
+        btnHome = findViewById(R.id.btnHome);
+        btnAbout = findViewById(R.id.btnAbout);
+        btnAdmission = findViewById(R.id.btnAdmission);
+        btnDepartments = findViewById(R.id.btnDepartments);
+        btnExit = findViewById(R.id.btnExit);
+
+        // Setting Click Listeners
+        btnHome.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "Welcome to UniConnect!", Toast.LENGTH_SHORT).show()
+        );
+
+        btnAbout.setOnClickListener(v -> showAboutUniversityDialog());
+
+        btnAdmission.setOnClickListener(v -> showAdmissionHelpDialog());
+
+        btnDepartments.setOnClickListener(v -> showDepartmentsMenu(v));
+
+        btnExit.setOnClickListener(v -> finish());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.home) {
+            Toast.makeText(this, "Welcome to UniConnect!", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.about_university) {
+            showAboutUniversityDialog();
+            return true;
+        } else if (itemId == R.id.admission_help) {
+            showAdmissionHelpDialog();
+            return true;
+        } else if (itemId == R.id.exit_app) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    // Popup Menu: Department Selection
+    private void showDepartmentsMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.getMenuInflater().inflate(R.menu.departments_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            String deptName = item.getTitle().toString();
+            Toast.makeText(MainActivity.this, deptName + " Department Selected", Toast.LENGTH_SHORT).show();
+            return true;
+        });
+
+        popupMenu.show();
+    }
+
+    // Dialog for About University
+    private void showAboutUniversityDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("About UniConnect")
+                .setMessage("UniConnect is your official university guide to explore departments, get admission help, and more.")
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    // Dialog for Admission Help
+    private void showAdmissionHelpDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Admission Support")
+                .setMessage("For admission assistance, contact: +91-9876543210\nEmail: help@uniconnect.edu")
+                .setPositiveButton("Got It", null)
+                .show();
+    }
+}
+3]activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#F8F9FA">
+
+    <!-- Heading for the App -->
+    <TextView
+        android:id="@+id/tvHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="University App"
+        android:textSize="24sp"
+        android:textColor="#000000"
+        android:layout_marginBottom="24dp"
+        android:textStyle="bold" />
+
+    <!-- Home Button -->
+    <Button
+        android:id="@+id/btnHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Home" />
+
+    <!-- About University Button -->
+    <Button
+        android:id="@+id/btnAbout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="About University"
+        android:layout_marginTop="16dp" />
+
+    <!-- Admission Help Button -->
+    <Button
+        android:id="@+id/btnAdmission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Admission Help"
+        android:layout_marginTop="16dp" />
+
+    <!-- Explore Departments Button -->
+    <Button
+        android:id="@+id/btnDepartments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Explore Departments"
+        android:layout_marginTop="16dp" />
+
+    <!-- Exit App Button -->
+    <Button
+        android:id="@+id/btnExit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Exit App"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
+
+4]main_menu.xml (res/menu)
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/home" android:title="Home" />
+    <item android:id="@+id/about_university" android:title="About University" />
+    <item android:id="@+id/admission_help" android:title="Admission Help" />
+    <item android:id="@+id/exit_app" android:title="Exit" />
+</menu>
+
+5]departments_menu.xml (res/menu)
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/cse" android:title="Computer Science" />
+    <item android:id="@+id/mech" android:title="Mechanical" />
+    <item android:id="@+id/electrical" android:title="Electrical" />
+    <item android:id="@+id/civil" android:title="Civil" />
+    <item android:id="@+id/ece" android:title="Electronics" />
+</menu>
+

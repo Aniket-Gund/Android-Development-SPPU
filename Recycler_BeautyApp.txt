@@ -1,0 +1,163 @@
+ProjectName:BeautyProductsApp
+
+1]activity_main.xml: 
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>
+
+2]item_beauty_product.xml(res\layout):
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="6dp"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product Name"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/productDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description" />
+
+        <TextView
+            android:id="@+id/productPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₹0.00"
+            android:textColor="#E91E63"
+            android:textStyle="bold" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+3]MainActivity.java:
+package com.example.beautyproductsapp;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.*;
+import java.util.*;
+
+public class MainActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView;
+    List<BeautyProduct> productList;
+    BeautyProductAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Create a list of beauty products
+        productList = new ArrayList<>();
+        productList.add(new BeautyProduct("Lipstick", "Long lasting matte finish", 299.0));
+        productList.add(new BeautyProduct("Face Cream", "Glow boosting cream", 499.0));
+        productList.add(new BeautyProduct("Mascara", "Volume and curl", 399.0));
+        productList.add(new BeautyProduct("Compact Powder", "Oil control finish", 199.0));
+        productList.add(new BeautyProduct("Foundation", "Flawless full coverage", 699.0));
+        productList.add(new BeautyProduct("Blush", "Soft pink natural glow", 350.0));
+        productList.add(new BeautyProduct("Eyeliner", "Waterproof black liner", 220.0));
+        productList.add(new BeautyProduct("BB Cream", "Natural daily coverage", 275.0));
+        productList.add(new BeautyProduct("Highlighter", "Shimmering finish", 410.0));
+        productList.add(new BeautyProduct("Nail Polish", "Glossy red finish", 150.0));
+        productList.add(new BeautyProduct("Makeup Remover", "Gentle cleansing", 299.0));
+        productList.add(new BeautyProduct("Toner", "Pore minimizing", 330.0));
+        productList.add(new BeautyProduct("Serum", "Hydrating face serum", 599.0));
+        productList.add(new BeautyProduct("Sunscreen", "SPF 50+ protection", 350.0));
+        productList.add(new BeautyProduct("Hair Oil", "Silky smooth finish", 249.0));
+
+        // Set up the adapter to display the products
+        adapter = new BeautyProductAdapter(this, productList);
+        recyclerView.setAdapter(adapter);
+    }
+}
+
+4]BeautyProduct.java:
+package com.example.beautyproductsapp;
+
+public class BeautyProduct {
+    String name, description;
+    double price;
+
+    public BeautyProduct(String name, String description, double price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+}
+
+5]BeautyProductAdapter.java:
+package com.example.beautyproductsapp;
+
+import android.content.Context;
+import android.view.*;
+import android.widget.*;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
+
+public class BeautyProductAdapter extends RecyclerView.Adapter<BeautyProductAdapter.ViewHolder> {
+
+    Context context;
+    List<BeautyProduct> productList;
+
+    public BeautyProductAdapter(Context context, List<BeautyProduct> productList) {
+        this.context = context;
+        this.productList = productList;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView productName, productDesc, productPrice;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            productName = itemView.findViewById(R.id.productName);
+            productDesc = itemView.findViewById(R.id.productDesc);
+            productPrice = itemView.findViewById(R.id.productPrice);
+        }
+    }
+
+    @Override
+    public BeautyProductAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_beauty_product, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(BeautyProductAdapter.ViewHolder holder, int position) {
+        BeautyProduct product = productList.get(position);
+        holder.productName.setText(product.name);
+        holder.productDesc.setText(product.description);
+        holder.productPrice.setText("₹" + product.price);
+    }
+
+    @Override
+    public int getItemCount() {
+        return productList.size();
+    }
+}

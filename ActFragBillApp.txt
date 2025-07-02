@@ -1,0 +1,268 @@
+projectName:BillPaymentApp
+
+1] MainActivity.java:
+package com.example.billpaymentapp;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Load InputFragment dynamically
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new InputFragment());
+            transaction.commit();
+        }
+    }
+}
+
+2]DisplayActivity.java:
+package com.example.billpaymentapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class DisplayActivity extends AppCompatActivity {
+
+    TextView tvName, tvBillType, tvAmount;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_display);
+
+        // Initialize TextViews
+        tvName = findViewById(R.id.tvName);
+        tvBillType = findViewById(R.id.tvBillType);
+        tvAmount = findViewById(R.id.tvAmount);
+
+        // Get the data from the Intent
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        String amount = intent.getStringExtra("amount");
+        String billType = intent.getStringExtra("billType");
+
+        // Set the data to the TextViews
+        tvName.setText("Name: " + name);
+        tvBillType.setText("Bill Type: " + billType);
+        tvAmount.setText("Amount: " + amount);
+    }
+}
+
+3]InputFragment.java:
+
+package com.example.billpaymentapp;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import androidx.fragment.app.Fragment;
+
+public class InputFragment extends Fragment {
+
+    EditText etName, etAmount;
+    Spinner spinnerBillType;
+    Button btnSubmit;
+
+    // Sample bill types for the Spinner
+    String[] billTypes = {"Electricity", "Water", "Internet", "Mobile Recharge", "Gas Bill", "Credit Card"};
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the fragment layout
+        View view = inflater.inflate(R.layout.fragment_input, container, false);
+
+        // Initialize views
+        etName = view.findViewById(R.id.etName);
+        etAmount = view.findViewById(R.id.etAmount);
+        spinnerBillType = view.findViewById(R.id.spinnerBillType);
+        btnSubmit = view.findViewById(R.id.btnSubmit);
+
+        // Set up the Spinner with the bill types
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, billTypes);
+        spinnerBillType.setAdapter(adapter);
+
+        // Button click listener
+        btnSubmit.setOnClickListener(v -> {
+            // Get data from input fields
+            String name = etName.getText().toString().trim();
+            String amount = etAmount.getText().toString().trim();
+            String billType = spinnerBillType.getSelectedItem().toString();
+
+            // Pass data to DisplayActivity
+            Intent intent = new Intent(getActivity(), DisplayActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("amount", amount);
+            intent.putExtra("billType", billType);
+            startActivity(intent);
+        });
+
+        return view;
+    }
+}
+
+4]DisplayFragment.java:
+package com.example.billpaymentapp;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class DisplayFragment extends Fragment {
+
+    TextView tvName, tvBillType, tvAmount;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_display, container, false);
+
+        tvName = view.findViewById(R.id.tvName);
+        tvBillType = view.findViewById(R.id.tvBillType);
+        tvAmount = view.findViewById(R.id.tvAmount);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            tvName.setText("Name: " + bundle.getString("name"));
+            tvBillType.setText("Bill Type: " + bundle.getString("billType"));
+            tvAmount.setText("Amount: ₹" + bundle.getString("amount"));
+        }
+
+        return view;
+    }
+}
+
+5]activity_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Fragment container where the InputFragment will be loaded -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>
+
+6]activity_display.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Display the Name -->
+    <TextView
+        android:id="@+id/tvName"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Display the Bill Type -->
+    <TextView
+        android:id="@+id/tvBillType"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Display the Amount -->
+    <TextView
+        android:id="@+id/tvAmount"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
+</LinearLayout>
+
+7]fragment_input.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Name Input -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Name" />
+
+        <!-- Amount Input -->
+        <EditText
+            android:id="@+id/etAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Amount"
+            android:inputType="number" />
+
+        <!-- Spinner for Bill Type -->
+        <Spinner
+            android:id="@+id/spinnerBillType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Submit" />
+    </LinearLayout>
+</ScrollView>
+
+8]fragment_display.xml:
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView android:id="@+id/tvName"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView android:id="@+id/tvBillType"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView android:id="@+id/tvAmount"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+

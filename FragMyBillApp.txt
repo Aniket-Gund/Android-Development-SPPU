@@ -1,0 +1,205 @@
+1]ProjectName: MyBillApp
+
+2]activity_main.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fragmentEnter"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <FrameLayout
+        android:id="@+id/fragmentDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+</LinearLayout>
+
+3]MainActivity.java :
+package com.example.mybillapp;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity implements EnterDetailsFragment.OnDataPass {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Load only top fragment initially
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentEnter, new EnterDetailsFragment())
+                .commit();
+    }
+
+    @Override
+    public void onDataPass(String amount, String date) {
+        // Load DisplayDetailsFragment and pass data via bundle
+        DisplayDetailsFragment displayFragment = new DisplayDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("amount", amount);
+        bundle.putString("date", date);
+        displayFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentDisplay, displayFragment)
+                .commit();
+    }
+}
+
+4]EnterDetailsFragment.java :
+
+package com.example.mybillapp;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import androidx.fragment.app.Fragment;
+
+public class EnterDetailsFragment extends Fragment {
+
+    EditText editAmount, editDate;
+    Button btnSubmit;
+    OnDataPass dataPasser;
+
+    public interface OnDataPass {
+        void onDataPass(String amount, String date);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (OnDataPass) context;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_enter_details, container, false);
+
+        editAmount = view.findViewById(R.id.editAmount);
+        editDate = view.findViewById(R.id.editDate);
+        btnSubmit = view.findViewById(R.id.btnSubmit);
+
+        btnSubmit.setOnClickListener(v -> {
+            String amount = editAmount.getText().toString();
+            String date = editDate.getText().toString();
+            dataPasser.onDataPass(amount, date);
+        });
+
+        return view;
+    }
+}
+
+5]fragment_enter_details.xml :
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- App Title -->
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bill Payment App"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp" />
+
+    <!-- Amount Input -->
+    <EditText
+        android:id="@+id/editAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Amount to pay" />
+
+    <!-- Date Input -->
+    <EditText
+        android:id="@+id/editDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date of payment" />
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pay"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
+
+6]DisplayDetailsFragment.java :
+
+package com.example.mybillapp;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.fragment.app.Fragment;
+
+public class DisplayDetailsFragment extends Fragment {
+
+    TextView textAmount, textDate;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_display_details, container, false);
+
+        textAmount = view.findViewById(R.id.textAmount);
+        textDate = view.findViewById(R.id.textDate);
+
+        // Get passed data
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String amount = bundle.getString("amount", "");
+            String date = bundle.getString("date", "");
+
+            textAmount.setText("Amount paid :" + amount);
+            textDate.setText("Date of payment: " + date);
+        }
+
+        return view;
+    }
+}
+
+7]fragment_display_details.xml :
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Amount paid :" />
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date of payment: " />
+</LinearLayout>
+
+

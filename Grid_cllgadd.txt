@@ -1,0 +1,301 @@
+1]Projectname : CollegeAdmissionApp
+2]MainActivity.java 
+package com.example.collegeadmissionapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    String[] labels = {
+            "Apply Now",
+            "Courses Offered",
+            "Fee Structure",
+            "Campus Tour",
+            "Contact Us",
+            "About College"
+    };
+
+    int[] images = {
+            R.drawable.apply,
+            R.drawable.courses,
+            R.drawable.fee,
+            R.drawable.tour,
+            R.drawable.contact,
+            R.drawable.about
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        int[] layoutIds = {
+                R.id.item1, R.id.item2, R.id.item3,
+                R.id.item4, R.id.item5, R.id.item6
+        };
+
+        for (int i = 0; i < layoutIds.length; i++) {
+            final int index = i;
+            LinearLayout itemLayout = findViewById(layoutIds[i]);
+            itemLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    intent.putExtra("label", labels[index]);
+                    intent.putExtra("image", images[index]);
+                    intent.putExtra("description", getDescription(labels[index]));
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
+    private String getDescription(String label) {
+        switch (label) {
+            case "Apply Now":
+                return "Apply for admission through our online portal.";
+            case "Courses Offered":
+                return "We offer Engineering, Business, Arts, and Science programs.";
+            case "Fee Structure":
+                return "Affordable fee structure with scholarship opportunities.";
+            case "Campus Tour":
+                return "Explore our green, tech-enabled, modern campus.";
+            case "Contact Us":
+                return "Reach us at contact@college.edu or call 1234567890.";
+            case "About College":
+                return "Our college is dedicated to excellence in education.";
+            default:
+                return "";
+        }
+    }
+}
+
+3]activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:padding="16dp">
+
+        <!-- Each item: icon + label inside LinearLayout -->
+        <LinearLayout
+            android:id="@+id/item1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:background="@drawable/image_border"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/apply" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apply Now"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:background="@drawable/image_border"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/courses" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Courses Offered"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:background="@drawable/image_border"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/fee" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fee Structure"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:background="@drawable/image_border"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/tour" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Campus Tour"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:background="@drawable/image_border"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/contact" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contact Us"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:background="@drawable/image_border"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/about" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="About College"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+    </GridLayout>
+</ScrollView>
+
+4]DetailActivity.java
+package com.example.collegeadmissionapp;
+
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class DetailActivity extends AppCompatActivity {
+
+    ImageView detailImage;
+    TextView detailTitle, detailDescription;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_detail);
+
+        detailImage = findViewById(R.id.detailImage);
+        detailTitle = findViewById(R.id.detailTitle);
+        detailDescription = findViewById(R.id.detailDescription);
+
+        int image = getIntent().getIntExtra("image", 0);
+        String title = getIntent().getStringExtra("label");
+        String description = getIntent().getStringExtra("description");
+
+        detailImage.setImageResource(image);
+        detailTitle.setText(title);
+        detailDescription.setText(description);
+    }
+}
+
+
+5]activity_detail.xml
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/detailImage"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Image" />
+
+    <TextView
+        android:id="@+id/detailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/detailDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp" />
+</LinearLayout>
+
+6]image_border.xml
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke android:width="3dp" android:color="#000000"/>
+    <corners android:radius="8dp"/>
+</shape>
+
+
